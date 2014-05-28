@@ -1,9 +1,45 @@
 <html>
     <head>
         <script src="/main.js" type="text/javascript"></script>
+        <script src="/jquery-2.1.1.min.js" type="text/javascript"></script>
+        <style>
+            .leaderboard {
+                width: 400px;
+                overflow: hidden;
+                float: left;
+            }
+
+        </style>
     </head>
     <body>
-        <h1>Hello World</h1>
-        <div id="dump"></div>
+        <h3>Summary</h3>
+        <div>
+            <span>Time:</span>
+            <span id="date"></span>
+        </div>
+        <div>
+            <span>Unique:</span>
+            <span id="unique"></span>
+        </div>
+        <div>
+            <span>Tweets:</span>
+            <span id="tweets"></span>
+        </div>
+        <div> 
+            <div class="leaderboard">
+                <h3>Z-Scores</h3>
+                <div id="zscores"></div>
+            </div>
+
+            <div class="leaderboard">
+                <h3>Top Seen</h3>
+                <div id="topseen"></div>
+            </div>
+            
+            <div class="leaderboard">
+                <h3>Top Sample</h3>
+                <div id="topsample"></div>
+            </div>
+        </div>
     </body>
 </html>

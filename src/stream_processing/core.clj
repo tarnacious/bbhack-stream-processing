@@ -17,7 +17,7 @@
 
 (defn write-topk [] 
   (let [chan (chan)
-        sample-size 100
+        sample-size 1000
         total-log (HyperLogLog. 10)
         total-summary (StreamSummary. 100)
        ; tweets (db/tweet-chan)
@@ -41,6 +41,7 @@
             (if (= (mod total sample-size) 0)
               (do 
                 (>! chan { 
+                          :total-tweets total
                           :last-date (str (get tweet :date))
                           :sample-count sample-size
                           :sample-unique (.cardinality log)
