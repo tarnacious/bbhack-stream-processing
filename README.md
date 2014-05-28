@@ -1,14 +1,19 @@
 # stream-processing
 
-A Clojure library designed to ... well, that part is up to you.
+A clojure stream processing program hacked together for bbuzz stream hackathon.
 
-## Usage
+Reads tweets from a database or a socket. Calulates top-k hashtags for the
+entire set and also takes samples and uses standard score to try and find
+trends.
 
-FIXME
+## Installation
 
-## License
+Install stream lib
 
-Copyright © 2014 FIXME
+    git clone https://github.com/addthis/stream-lib.git
+    mvn install:install-file -Dfile=target/stream-2.7.0-SNAPSHOT.jar -DpomFile=pom.xml
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+## Running
+
+    lein run
+
