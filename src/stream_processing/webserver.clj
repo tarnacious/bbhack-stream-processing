@@ -35,27 +35,28 @@
 ;===============================================================================
 ; Webbit Handler / WebSockets
 ;===============================================================================
+;
 
 (def ^:private ws-conns* (ref #{}))
-(def offers (atom []))
-(def connections (atom (hash-map)))
+(def connections (atom []))
 
 (defn- ws-stats [] (println "websocket count:" (count @ws-conns*)))
+
+(go (let [chan (summaries)]
+    (loop [summary (<!! chan)]
+            (println "")
+            (println "")
+           
+            (println (:last-date summary))
+            (doseq [c (deref connections)]
+              (.send c (json/write-str summary)))
+      (recur (<!! chan)))))
 
 (defn- ws-open [c]
   (dosync (alter ws-conns* conj c))
   (ws-stats)
+  (swap! connections (fn [a] (cons c a)))
   
-  (let [chan (summaries)]
-      (loop [summary (<!! chan)]
-              (println "")
-              (println "")
-             
-              (println (:last-date summary))
-              (doseq [score (take 20 (:zscores summary))] 
-                (println score))
-              (.send c (json/write-str summary))
-        (recur (<!! chan))))
   )
 
 (defn- ws-close [c]
