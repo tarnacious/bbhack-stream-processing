@@ -2,6 +2,7 @@
   (:require [stream-processing.database :as db]
             [stream-processing.tweet :refer [parse-tweet]]
             [stream-processing.standardscore :refer [zscores]]
+            [stream-processing.sockets :as sockets]
             [clojure.core.async :refer [<!! >!! chan go timeout]])
   (import com.clearspring.analytics.stream.cardinality.HyperLogLog)
   (import com.clearspring.analytics.stream.StreamSummary)
@@ -19,7 +20,10 @@
         sample-size 5000
         total-log (HyperLogLog. 10)
         total-summary (StreamSummary. 100)
-        tweets (db/tweet-chan)]
+       ; tweets (db/tweet-chan)
+        tweets (sockets/tweet-stream)
+         
+        ]
     (go 
       (loop [tweet (<!! tweets)
              log (HyperLogLog. 10)
