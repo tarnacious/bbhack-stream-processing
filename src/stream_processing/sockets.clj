@@ -14,17 +14,9 @@
         (loop []
           (let [tweet (zmq/receive-str subscriber)]
             (if (not= tweet "tweet.stream")
-              ;(println (str tweet))
-              (>! chan (parse-tweet (str tweet)))
-              ;(go (>! chan tweet))   ; async fun 
-              ) 
+              (let [tweet (parse-tweet (str tweet))]
+                (if (= "en" (:lang tweet))
+                  (>! chan tweet)))) 
           (recur))))))
       chan 
     ))
-
-(defn -main [& args]
-  (println "Starting")
-  (<!! (tweet-stream))
-  (println "Finish")
-  (<!! (timeout 20000))
-  (println "Finish"))
