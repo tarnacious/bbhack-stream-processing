@@ -17,7 +17,7 @@
 
 (defn write-topk [] 
   (let [chan (chan)
-        sample-size 5000
+        sample-size 100
         total-log (HyperLogLog. 10)
         total-summary (StreamSummary. 100)
        ; tweets (db/tweet-chan)
@@ -53,27 +53,44 @@
     chan
     )) 
 
+
+(defn summaries []
+  (let [chan (chan)]
+    (go
+      (let [c (write-topk)]
+        (loop [summary (<!! c)
+               samples []] 
+            
+          (let [top-k (:sample-top-k summary)
+                top-k-history (map (fn [x] (:sample-top-k x)) samples)
+                scores (sort-by :score > (zscores top-k top-k-history))
+                ]
+              
+              ;(println "")
+              ;(println (:sample-top-k summary))
+              ;(println (:last-date summary))
+              (let [all-data (assoc summary :zscores scores)]
+                (>!! chan all-data))
+              ;(println "")
+            )
+          (recur (<!! c) (take 30 (cons summary samples))))))
+    chan))
+
+  
+
 (defn -main [& args]
   (println "Working!")
-  (let [c (write-topk)]
-    (loop [summary (<!! c)
-           samples []] 
-        
-      (let [top-k (:sample-top-k summary)
-            top-k-history (map (fn [x] (:sample-top-k x)) samples)
-            scores (sort-by :score > (zscores top-k top-k-history))
-            ]
-          
-          (println "")
-          ;(println (:sample-top-k summary))
-          (println (:last-date summary))
-          (doseq [score (take 20 scores)] 
-            (println score)
+  (let [c (summaries)]
+      (loop [summary (<!! c)]
+              (println "")
+              (println "")
+             
+              (println (:last-date summary))
+              (doseq [score (take 20 (:zscores summary))] 
+                (println score))
 
-            )
-          (println "")
-        )
-      (recur (<!! c) (take 30 (cons summary samples)))))
-  
+                
+        (recur (<!! c)))
+    )
   (println "DONE")
 )

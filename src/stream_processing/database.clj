@@ -2,7 +2,8 @@
   (:require [clojure.java.jdbc :as sql]
             [stream-processing.tweet :refer [parse-tweet]]
             [clojure.java.io :as io]
-            [clojure.core.async :refer [>! >!! <!! chan go timeout close!]]))
+            [clojure.core.async :refer [>! >!! <!! chan go timeout close!]])
+  )
 
 (def db-spec 
   {:classname "org.postgresql.Driver" ; must be in classpath
